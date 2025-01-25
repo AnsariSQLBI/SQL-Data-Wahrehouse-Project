@@ -18,23 +18,27 @@ Usage Example:
 */
 CREATE OR ALTER PROCEDURE bronze.load_bronze AS
 BEGIN
+-- Declare variables for time tracking
 	DECLARE @start_time DATETIME, @end_time DATETIME, @batch_start_time DATETIME, @batch_end_time DATETIME; 
 	BEGIN TRY
+        -- Start batch time tracking
 		SET @batch_start_time = GETDATE();
 		PRINT '================================================';
 		PRINT 'Loading Bronze Layer';
 		PRINT '================================================';
-
+        -- Start loading CRM tables
 		PRINT '------------------------------------------------';
 		PRINT 'Loading CRM Tables';
 		PRINT '------------------------------------------------';
-
+        -- Load crm_cust_info table
 		SET @start_time = GETDATE();
 		PRINT '>> Truncating Table: bronze.crm_cust_info';
-
+        -- Truncate the existing data in the crm_cust_info table
 		TRUNCATE TABLE bronze.crm_cust_info;
 
 		PRINT '>> Inserting Data Into: bronze.crm_cust_info';
+        -- Use BULK INSERT to load data from CSV file into the crm_cust_info table
+
 		BULK INSERT bronze.crm_cust_info
 		FROM 'C:\Users\ansari_a\Desktop\SQL-Data-Wahrehouse-Project\Datasets\Source_crm\cust_info.csv'
 		WITH (
@@ -46,7 +50,7 @@ BEGIN
 		SET @end_time = GETDATE();
 		PRINT '>> Load Duration: ' + CAST(DATEDIFF(second, @start_time, @end_time) AS NVARCHAR) + ' seconds';
 		PRINT '>> -------------';
-
+        -- End of crm_cust_info table load time tracking
         SET @start_time = GETDATE();
 		PRINT '>> Truncating Table: bronze.crm_prd_info';
 
